@@ -6,7 +6,9 @@ namespace AdventOfCsharp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            IProcessDayRiddle _dayOne = new SonarSweep();
+            _dayOne.ExecuteSolutions();
+            _dayOne.PrintSolutions();
         }
     }
 }
