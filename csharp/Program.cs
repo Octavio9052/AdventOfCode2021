@@ -7,8 +7,10 @@ namespace AdventOfCsharp
     {
         private static readonly Dictionary<int, IProcessDayRiddle> RiddleSolvers = new()
         {
-            { 1, new SonarSweep() }
-        };
+            { 1, new SonarSweep() },
+            { 2, new Dive()
+        }
+    };
 
         private const string Welcome =
             @"                          
