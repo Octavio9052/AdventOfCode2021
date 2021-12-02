@@ -7,48 +7,53 @@ namespace AdventOfCsharp
 {
     public class Dive : IProcessDayRiddle
     {
+        private enum SubmarineNavigationAction
+        {
+            Up,
+            Down,
+            Forward
+        }
+
         private const string InputValues = "../../../../res/dayTwo.txt";
         private string _solutionOne = string.Empty;
         private string _solutionTwo = string.Empty;
-        private List<Tuple<SubmarineNavigationAction, int>> _instructionSet = new();
+        private readonly List<Tuple<SubmarineNavigationAction, int>> _instructionSet = new();
 
-        private string[] Extract(string path) =>
-            File.ReadAllLines(path).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+        private IEnumerable<string> Extract(string path) => File.ReadAllLines(path).Where(x => !string.IsNullOrWhiteSpace(x));
 
-        private int CalculateHorizontal(List<Tuple<SubmarineNavigationAction, int>> steps)
-            => steps.Where(x => x.Item1.Equals(SubmarineNavigationAction.Forward)).Select(x => x.Item2).Sum();
+        private int CalculateHorizontal() => _instructionSet.Where(x => x.Item1.Equals(SubmarineNavigationAction.Forward)).Select(x => x.Item2).Sum();
 
-        private int CalculateDepth(List<Tuple<SubmarineNavigationAction, int>> steps)
-            => steps.Where(x => x.Item1.Equals(SubmarineNavigationAction.Down)).Select(x => x.Item2).Sum() - steps.Where(x => x.Item1.Equals(SubmarineNavigationAction.Up)).Select(x => x.Item2).Sum();
+        private int CalculateDepth() => _instructionSet.Where(x => x.Item1.Equals(SubmarineNavigationAction.Down)).Select(x => x.Item2).Sum()
+                                        - _instructionSet.Where(x => x.Item1.Equals(SubmarineNavigationAction.Up)).Select(x => x.Item2).Sum();
 
         private int CalculateStepByStep()
         {
             var depth = 0;
             var horizontal = 0;
             var aim = 0;
-            foreach (var step in _instructionSet)
+            foreach (var (action, amount) in _instructionSet)
             {
-                if (step.Item1.Equals(SubmarineNavigationAction.Forward))
+                if (action.Equals(SubmarineNavigationAction.Forward))
                 {
-                    horizontal += step.Item2;
-                    depth += aim * step.Item2;
+                    horizontal += amount;
+                    depth += aim * amount;
                 }
-                if (step.Item1.Equals(SubmarineNavigationAction.Up))
+                if (action.Equals(SubmarineNavigationAction.Up))
                 {
-                    aim -= step.Item2;
+                    aim -= amount;
                 }
-                if (step.Item1.Equals(SubmarineNavigationAction.Down))
+                if (action.Equals(SubmarineNavigationAction.Down))
                 {
-                    aim += step.Item2;
+                    aim += amount;
                 }
             }
 
             return horizontal * depth;
         }
 
-        private void ExtractInstructions()
+        private void ExtractInstructions(string path)
         {
-            var steps = Extract(InputValues);
+            var steps = Extract(path);
             _instructionSet.AddRange(steps.Select(x =>
             {
                 var substeps = x.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -60,8 +65,8 @@ namespace AdventOfCsharp
 
         public void ExecuteSolutions()
         {
-            ExtractInstructions();
-            _solutionOne = (CalculateHorizontal(_instructionSet) * CalculateDepth(_instructionSet)).ToString();
+            ExtractInstructions(InputValues);
+            _solutionOne = (CalculateHorizontal() * CalculateDepth()).ToString();
             _solutionTwo = CalculateStepByStep().ToString();
         }
 
@@ -70,13 +75,6 @@ namespace AdventOfCsharp
             Console.WriteLine("DAY TWO - Dive");
             Console.WriteLine("Solution Part One: " + _solutionOne);
             Console.WriteLine("Solution Part Two: " + _solutionTwo);
-        }
-
-        private enum SubmarineNavigationAction
-        {
-            Up,
-            Down,
-            Forward
         }
     }
 }
