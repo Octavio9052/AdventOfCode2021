@@ -8,9 +8,9 @@ namespace AdventOfCsharp
         private static readonly Dictionary<int, IProcessDayRiddle> RiddleSolvers = new()
         {
             { 1, new SonarSweep() },
-            { 2, new Dive()
-        }
-    };
+            { 2, new Dive() },
+            { 3, new BinaryDiagnostic() }
+        };
 
         private const string Welcome =
             @"                          
@@ -25,9 +25,8 @@ namespace AdventOfCsharp
             Console.WriteLine(Welcome);
             Console.WriteLine(SelectDayMessage + RiddleSolvers.Count);
             var day = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(day) || !int.TryParse(day, out var dayNumber) || int.Parse(day) <= 0 || int.Parse(day) > RiddleSolvers.Count)
+            if (string.IsNullOrWhiteSpace(day) || !int.TryParse(day, out var dayNumber) || dayNumber <= 0 || dayNumber > RiddleSolvers.Count)
             {
-                Console.WriteLine(InvalidDay + RiddleSolvers.Count);
                 Console.WriteLine(InvalidDay + RiddleSolvers.Count);
                 Main(args);
             }
@@ -38,6 +37,5 @@ namespace AdventOfCsharp
                 daySolver.PrintSolutions();
             }
         }
-
     }
 }
